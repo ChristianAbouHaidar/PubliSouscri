@@ -8,23 +8,36 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import brocker.ports.PublicationInboudPort;
+import brocker.ports.ReceptionOutboudPort;
 import fr.sorbonne_u.components.AbstractComponent;
 import interfaces.MessageI;
+import interfaces.PublicationI;
 import interfaces.PublicationsImplementationI;
+import interfaces.ReceptionI;
 
-public class Brocker extends AbstractComponent {
+public class Brocker 
+extends AbstractComponent 
+implements PublicationI, ReceptionI {
 	
 	private Map<String, List<String>> topicsSub = new HashMap<String, List<String>>();
-	private PublicationInboudPort port;
-	public Brocker(String portURI) throws Exception {
-		super(portURI, 1, 0);
-		this.addRequiredInterface(PublicationsImplementationI.class);
-		this.port = new PublicationInboudPort(portURI, this) ;
-		this.addPort(this.port);
-		this.port.publishPort() ;
+	private PublicationInboudPort portPubli;
+	private ReceptionOutboudPort portRecep;
+	
+	
+	public Brocker(String portURIP, String portURIR) throws Exception {
+		super(1, 0);
+		this.addOfferedInterface(PublicationI.class);
+		this.addRequiredInterface(ReceptionI.class);
+		this.portPubli = new PublicationInboudPort(portURIP, this) ;
+		this.portRecep = new ReceptionOutboudPort(portURIR, this) ;
+		this.addPort(this.portPubli);
+		this.addPort(portRecep);
+		this.portPubli.publishPort() ;
+		this.portRecep.publishPort();
 	}
 
-	public void publier(MessageI m, String topic) throws Exception {
+	@Override
+	public void publish(MessageI m, String topic) throws Exception {
 		if (!isTopic(topic)) 
 			createTopic(topic);
 		this.traceMessage("les topics = " + getTopics()) ;
@@ -32,22 +45,22 @@ public class Brocker extends AbstractComponent {
 		Stream.of(topicsSub.keySet().toString()).forEach(System.out::println);
 		// TODO -> envoyer aux sub
 	}
-
 	
-	public void publier(MessageI m, String[] topics) throws Exception {
-		for(String t: topics) publier(m,t);
+	@Override
+	public void publish(MessageI m, String[] topics) throws Exception {
+		for(String t: topics) publish(m,t);
 	}
 
-	
-	public void publier(MessageI[] m, String topic) throws Exception {
-		for(MessageI mes: m) publier(mes,topic);
+	@Override
+	public void publish(MessageI[] m, String topic) throws Exception {
+		for(MessageI mes: m) publish(mes,topic);
 	}
 
-	
-	public void publier(MessageI[] m, String[] topics) throws Exception {
+	@Override
+	public void publish(MessageI[] m, String[] topics) throws Exception {
 		for(MessageI mes: m)
 			for(String t: topics)
-				publier(mes,t);
+				publish(mes,t);
 	}
 
 	public void createTopic(String topic) {
@@ -75,5 +88,15 @@ public class Brocker extends AbstractComponent {
 		Set<String> set = topicsSub.keySet();
         String arr[] = new String[set.size()];  
         return set.toArray(arr); 
+	}
+
+	@Override
+	public void acceptMessage(MessageI m) throws Exception {
+		this.portRecep.acceptMessage(m);
+	}
+
+	@Override
+	public void acceptMessage(MessageI[] m) throws Exception {
+		this.portRecep.acceptMessage(m);
 	}
 }

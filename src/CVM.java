@@ -6,7 +6,8 @@ import publisher.Publisher;
 public class CVM extends AbstractCVM {
 
 	protected static final String URI1 = "iport" ;
-	protected static final String URI2 = "oport" ;
+	protected static final String URI2 = "oportP" ;
+	protected static final String URI3 = "oportR" ;
 	
 	public CVM() throws Exception {
 		super();
@@ -14,8 +15,8 @@ public class CVM extends AbstractCVM {
 
 	@Override
 	public void deploy() throws Exception {
-		Brocker calc = new Brocker(URI1) ;
-		Publisher v = new Publisher(URI2) ;
+		Brocker calc = new Brocker(URI1,URI2) ;
+		Publisher v = new Publisher(URI3) ;
 		v.toggleTracing() ;
 
 		v.doPortConnection(

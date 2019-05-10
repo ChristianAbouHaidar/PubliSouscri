@@ -4,10 +4,12 @@ import concrateObjects.Message;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import interfaces.MessageI;
+import interfaces.PublicationsImplementationI;
 import publisher.ports.PublicationOutboundPort;
 
 public class Publisher 
 extends AbstractComponent 
+implements PublicationsImplementationI
 {
 
 	protected PublicationOutboundPort	publiPort;
@@ -19,25 +21,25 @@ extends AbstractComponent
 		this.publiPort.publishPort() ;
 	}
 
-
-	public void publier(MessageI m, String topic) throws Exception {
+	@Override
+	public void publish(MessageI m, String topic) throws Exception {
 		this.publiPort.publish(m,topic);
 	}
 
-	
-	public void publier(MessageI m, String[] topics) throws Exception {
+	@Override
+	public void publish(MessageI m, String[] topics) throws Exception {
 		this.publiPort.publish(m,topics);
 
 	}
 
-	
-	public void publier(MessageI[] m, String topic) throws Exception {
+	@Override
+	public void publish(MessageI[] m, String topic) throws Exception {
 		this.publiPort.publish(m,topic);
 
 	}
 
-	
-	public void publier(MessageI[] m, String[] topics) throws Exception {
+	@Override
+	public void publish(MessageI[] m, String[] topics) throws Exception {
 		this.publiPort.publish(m,topics);
 	}
 
@@ -45,8 +47,8 @@ extends AbstractComponent
 	@Override
 	public void execute() throws Exception {
 		super.execute();
-		String[] lesTopics = {"tpoic1", "tpoic2", "tpoic3", "tpoic1"}; 
-		publier(new Message("hello World"), lesTopics);
+		String[] lesTopics = {"tpoic1", "tpoic2", "tpoic3", "tpoic1"};
+		publish(new Message("hello World"), lesTopics);
 	}
 
 

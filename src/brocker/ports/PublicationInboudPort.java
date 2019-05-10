@@ -5,21 +5,22 @@ import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 import interfaces.MessageI;
+import interfaces.PublicationI;
 import interfaces.PublicationsImplementationI;
 
 public class PublicationInboudPort 
 extends AbstractInboundPort 
-implements PublicationsImplementationI {
+implements PublicationI {
 
 	private static final long serialVersionUID = 1L;
 
 	public PublicationInboudPort(ComponentI owner) throws Exception {
-		super(PublicationsImplementationI.class, owner);
+		super(PublicationI.class, owner);
 		assert owner instanceof Brocker ;
 	}
 
 	public PublicationInboudPort(String uri, ComponentI owner) throws Exception {
-		super(uri, PublicationsImplementationI.class, owner);
+		super(uri, PublicationI.class, owner);
 		assert owner instanceof Brocker ;
 	}
 
@@ -29,7 +30,7 @@ implements PublicationsImplementationI {
 			new AbstractComponent.AbstractService<Void>() {
 				@Override
 				public Void call() throws Exception {
-					((Brocker)this.getOwner()).publier(m, topic) ;
+					((Brocker)this.getOwner()).publish(m, topic) ;
 					return null;
 				}	
 			}
@@ -42,7 +43,7 @@ implements PublicationsImplementationI {
 			new AbstractComponent.AbstractService<Void>() {
 				@Override
 				public Void call() throws Exception {
-					((Brocker)this.getOwner()).publier(m, topics) ;
+					((Brocker)this.getOwner()).publish(m, topics) ;
 					return null;
 				}	
 			}
@@ -55,7 +56,7 @@ implements PublicationsImplementationI {
 			new AbstractComponent.AbstractService<Void>() {
 				@Override
 				public Void call() throws Exception {
-					((Brocker)this.getOwner()).publier(m, topic) ;
+					((Brocker)this.getOwner()).publish(m, topic) ;
 					return null;
 				}	
 			}
@@ -68,7 +69,7 @@ implements PublicationsImplementationI {
 			new AbstractComponent.AbstractService<Void>() {
 				@Override
 				public Void call() throws Exception {
-					((Brocker)this.getOwner()).publier(m, topic) ;
+					((Brocker)this.getOwner()).publish(m, topic) ;
 					return null;
 				}	
 			}
